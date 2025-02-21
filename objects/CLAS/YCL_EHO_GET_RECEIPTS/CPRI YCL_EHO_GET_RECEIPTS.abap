@@ -1,0 +1,2 @@
+  PRIVATE SECTION.
+    CONSTANTS mc_class_name TYPE devclass VALUE 'YCL_EHO_GET_RECEIPTS_'.

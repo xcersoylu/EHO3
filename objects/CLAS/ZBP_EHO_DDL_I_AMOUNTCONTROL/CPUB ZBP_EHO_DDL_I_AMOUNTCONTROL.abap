@@ -1,0 +1,1 @@
+CLASS zbp_eho_ddl_i_amountcontrol DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF yeho_ddl_i_amountcontrol.
