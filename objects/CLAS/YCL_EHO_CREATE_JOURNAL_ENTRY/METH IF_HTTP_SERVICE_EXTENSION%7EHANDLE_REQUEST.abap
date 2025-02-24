@@ -127,7 +127,7 @@
                             documentitemtext              = <ls_item>-documentitemtext
                             specialglcode                 = <ls_item>-specialglcode
                             _currencyamount = VALUE #( ( currencyrole = '00'
-                                                        journalentryitemamount = <ls_item>-amount
+                                                        journalentryitemamount = -1 * <ls_item>-amount
                                                         currency = <ls_item>-currency  ) )          ) TO lt_glitem.
           ENDIF.
           <fs_je>-%param = VALUE #( companycode                  = <ls_item>-companycode

@@ -39,6 +39,7 @@
     DATA lr_tax_number TYPE tt_tax_number.
     DATA lr_iban TYPE tt_iban.
     DATA lr_debit_credit TYPE tt_debit_credit.
+    data lv_documentitemtext type string.
     SELECT * FROM yeho_t_rules
              WHERE companycode = @ms_request-companycode
               INTO TABLE @DATA(lt_rules).
@@ -53,7 +54,8 @@
                                               AND tax_number IN lr_tax_number "#TODO bu kısmı doldur
                                               AND iban IN lr_iban
                                               AND debit_credit_indicator IN lr_debit_credit.
-          IF <ls_item>-description CP ls_rule-documentitemtext.
+          lv_documentitemtext = |*{ ls_rule-documentitemtext }*|.
+          IF <ls_item>-description CP lv_documentitemtext.
             <ls_item>-rule_no = ls_rule-itemno.
             EXIT.
           ENDIF.
