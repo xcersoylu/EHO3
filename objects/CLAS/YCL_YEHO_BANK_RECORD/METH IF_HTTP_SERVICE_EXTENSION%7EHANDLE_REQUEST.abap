@@ -138,25 +138,25 @@
              AND offlinedata~glaccount IN @ms_request-glaccount
              AND offlinedata~physical_operation_date IN @ms_request-date
              INTO CORRESPONDING FIELDS OF TABLE @ms_response-items.
-          if ms_response-items is NOT INITIAL.
-            SELECT mandoc~*
-              FROM @ms_response-items AS items INNER JOIN yeho_t_mandoc AS mandoc ON mandoc~companycode = items~companycode
-                                                                                AND mandoc~glaccount = items~glaccount
-                                                                                AND mandoc~receipt_no = items~receipt_no
-                                                                                AND mandoc~physical_operation_date = items~physical_operation_date
-             ORDER BY mandoc~companycode,mandoc~glaccount,mandoc~receipt_no,mandoc~physical_operation_date
-             INTO TABLE @lt_mandoc_db.
-          endif.
-*          DATA(lt_items) = ms_response-items.
-*          DELETE lt_items WHERE accountingdocument IS INITIAL.
-*          IF lt_items IS NOT INITIAL.
+*          if ms_response-items is NOT INITIAL.
 *            SELECT mandoc~*
-*              FROM @lt_items AS items INNER JOIN yeho_t_mandoc AS mandoc ON mandoc~companycode = items~companycode
+*              FROM @ms_response-items AS items INNER JOIN yeho_t_mandoc AS mandoc ON mandoc~companycode = items~companycode
 *                                                                                AND mandoc~glaccount = items~glaccount
 *                                                                                AND mandoc~receipt_no = items~receipt_no
 *                                                                                AND mandoc~physical_operation_date = items~physical_operation_date
 *             ORDER BY mandoc~companycode,mandoc~glaccount,mandoc~receipt_no,mandoc~physical_operation_date
 *             INTO TABLE @lt_mandoc_db.
+*          endif.
+          DATA(lt_items) = ms_response-items.
+          DELETE lt_items WHERE accountingdocument IS NOT INITIAL.
+          IF lt_items IS NOT INITIAL.
+            SELECT mandoc~*
+              FROM @lt_items AS items INNER JOIN yeho_t_mandoc AS mandoc ON mandoc~companycode = items~companycode
+                                                                                AND mandoc~glaccount = items~glaccount
+                                                                                AND mandoc~receipt_no = items~receipt_no
+                                                                                AND mandoc~physical_operation_date = items~physical_operation_date
+             ORDER BY mandoc~companycode,mandoc~glaccount,mandoc~receipt_no,mandoc~physical_operation_date
+             INTO TABLE @lt_mandoc_db.
 *          ELSE.
 *            SELECT *
 *              FROM yeho_t_mandoc
@@ -164,7 +164,7 @@
 *                AND glaccount IN @ms_request-glaccount
 *                ORDER BY companycode,glaccount,receipt_no,physical_operation_date
 *                INTO TABLE @lt_mandoc_db.
-*          ENDIF.
+          ENDIF.
           LOOP AT ms_response-items ASSIGNING <ls_item> WHERE accountingdocument IS INITIAL.
             READ TABLE lt_manual_documents INTO ls_manual_document
                                            WITH KEY glaccount = <ls_item>-glaccount
@@ -200,25 +200,25 @@
              AND offlinedata~glaccount IN @ms_request-glaccount
              AND offlinedata~physical_operation_date IN @ms_request-date
              INTO CORRESPONDING FIELDS OF TABLE @ms_response-items.
-          if ms_response-items is NOT INITIAL.
-            SELECT mandoc~*
-              FROM @ms_response-items AS items INNER JOIN yeho_t_mandoc AS mandoc ON mandoc~companycode = items~companycode
-                                                                                AND mandoc~glaccount = items~glaccount
-                                                                                AND mandoc~receipt_no = items~receipt_no
-                                                                                AND mandoc~physical_operation_date = items~physical_operation_date
-             ORDER BY mandoc~companycode,mandoc~glaccount,mandoc~receipt_no,mandoc~physical_operation_date
-             INTO TABLE @lt_mandoc_db.
-          endif.
-*          lt_items = ms_response-items.
-*          DELETE lt_items WHERE accountingdocument IS INITIAL.
-*          IF lt_items IS NOT INITIAL.
+*          if ms_response-items is NOT INITIAL.
 *            SELECT mandoc~*
-*              FROM @lt_items AS items INNER JOIN yeho_t_mandoc AS mandoc ON mandoc~companycode = items~companycode
+*              FROM @ms_response-items AS items INNER JOIN yeho_t_mandoc AS mandoc ON mandoc~companycode = items~companycode
 *                                                                                AND mandoc~glaccount = items~glaccount
 *                                                                                AND mandoc~receipt_no = items~receipt_no
 *                                                                                AND mandoc~physical_operation_date = items~physical_operation_date
 *             ORDER BY mandoc~companycode,mandoc~glaccount,mandoc~receipt_no,mandoc~physical_operation_date
 *             INTO TABLE @lt_mandoc_db.
+*          endif.
+          lt_items = ms_response-items.
+          DELETE lt_items WHERE accountingdocument IS NOT INITIAL.
+          IF lt_items IS NOT INITIAL.
+            SELECT mandoc~*
+              FROM @lt_items AS items INNER JOIN yeho_t_mandoc AS mandoc ON mandoc~companycode = items~companycode
+                                                                                AND mandoc~glaccount = items~glaccount
+                                                                                AND mandoc~receipt_no = items~receipt_no
+                                                                                AND mandoc~physical_operation_date = items~physical_operation_date
+             ORDER BY mandoc~companycode,mandoc~glaccount,mandoc~receipt_no,mandoc~physical_operation_date
+             INTO TABLE @lt_mandoc_db.
 *          ELSE.
 *            SELECT *
 *              FROM yeho_t_mandoc
@@ -226,8 +226,7 @@
 *                AND glaccount IN @ms_request-glaccount
 *                ORDER BY companycode,glaccount,receipt_no,physical_operation_date
 *                INTO TABLE @lt_mandoc_db.
-*
-*          ENDIF.
+          ENDIF.
 
           LOOP AT ms_response-items ASSIGNING <ls_item> WHERE accountingdocument IS INITIAL.
             READ TABLE lt_manual_documents INTO ls_manual_document

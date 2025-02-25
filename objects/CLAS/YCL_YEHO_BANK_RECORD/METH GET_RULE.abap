@@ -39,7 +39,7 @@
     DATA lr_tax_number TYPE tt_tax_number.
     DATA lr_iban TYPE tt_iban.
     DATA lr_debit_credit TYPE tt_debit_credit.
-    data lv_documentitemtext type string.
+    DATA lv_documentitemtext TYPE string.
     SELECT * FROM yeho_t_rules
              WHERE companycode = @ms_request-companycode
               INTO TABLE @DATA(lt_rules).
