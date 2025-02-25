@@ -126,8 +126,8 @@
 *                        reference3idbybusinesspartner = ms_request-selected_line-reference3idbybusinesspartner
                         costcenter                    = ms_request-selected_line-costcenter
                         _currencyamount = VALUE #( ( currencyrole = '00'
-                                                    journalentryitemamount = cond #( when lv_wrbtr_total < 0 then abs( ms_request-selected_line-amount )
-                                                                                                             else -1 * abs( ms_request-selected_line-amount ) )
+                                                    journalentryitemamount = COND #( WHEN lv_wrbtr_total < 0 THEN abs( ms_request-selected_line-amount )
+                                                                                                             ELSE -1 * abs( ms_request-selected_line-amount ) )
                                                     currency = ms_request-selected_line-currency  ) )          ) TO lt_glitem.
 
         <fs_je>-%param = VALUE #( companycode                  = ms_request-selected_line-companycode
@@ -159,7 +159,12 @@
           IF ls_commit_failed IS INITIAL.
             ms_response-accountingdocument = VALUE #( ls_commit_reported-journalentry[ 1 ]-accountingdocument OPTIONAL ).
             ms_response-fiscal_year = VALUE #( ls_commit_reported-journalentry[ 1 ]-fiscalyear OPTIONAL ).
-
+            MESSAGE ID ycl_eho_utils=>mc_message_class
+                  TYPE ycl_eho_utils=>mc_success
+                NUMBER 016
+                  WITH ms_response-accountingdocument
+                  INTO DATA(lv_message).
+            APPEND VALUE #( messagetype = ycl_eho_utils=>mc_success message = lv_message ) TO ms_response-messages.
             APPEND VALUE #( companycode             = ms_request-selected_line-companycode
                             glaccount               = ms_request-selected_line-glaccount
                             receipt_no              = ms_request-selected_line-receipt_no
