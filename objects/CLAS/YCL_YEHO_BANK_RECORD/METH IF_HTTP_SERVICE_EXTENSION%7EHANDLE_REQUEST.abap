@@ -66,8 +66,10 @@
       DATA(lt_bankdata_max) = lt_bankdata.
 
       LOOP AT lt_header INTO DATA(ls_header).
-        READ TABLE lt_bankdata_min INTO DATA(ls_bankdata_min) INDEX 1.
-        READ TABLE lt_bankdata_max INTO DATA(ls_bankdata_max) INDEX 1.
+        READ TABLE lt_bankdata_min INTO DATA(ls_bankdata_min) WITH KEY companycode = ls_header-companycode
+                                                                       glaccount = ls_header-glaccount.
+        READ TABLE lt_bankdata_max INTO DATA(ls_bankdata_max) WITH KEY companycode = ls_header-companycode
+                                                                       glaccount = ls_header-glaccount.
         APPEND VALUE #( companycode = ls_header-companycode
                         glaccount   = ls_header-glaccount
                         bank_code   = ls_bankdata_min-bank_code
@@ -81,6 +83,7 @@
                         bank_id         = ls_bankdata_min-bank_id
                         account_id      = ls_bankdata_min-account_id
                         ) TO ms_response-header.
+        CLEAR : ls_bankdata_min , ls_bankdata_max.
       ENDLOOP.
 
       CASE ms_request-record_type.
@@ -258,6 +261,7 @@
           ct_items = ms_response-items
       ).
     ENDIF.
+    SORT ms_response-items BY physical_operation_date ASCENDING time ASCENDING.
     DATA(lv_response_body) = /ui2/cl_json=>serialize( EXPORTING data = ms_response ).
     response->set_text( lv_response_body ).
     response->set_header_field( i_name = mc_header_content i_value = mc_content_type ).
