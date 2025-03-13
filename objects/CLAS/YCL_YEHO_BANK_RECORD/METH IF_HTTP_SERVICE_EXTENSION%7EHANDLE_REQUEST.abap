@@ -68,6 +68,9 @@
       LOOP AT lt_header INTO DATA(ls_header).
         READ TABLE lt_bankdata_min INTO DATA(ls_bankdata_min) WITH KEY companycode = ls_header-companycode
                                                                        glaccount = ls_header-glaccount.
+        if sy-subrc <> 0. "hareket yoksa ekrana gelmesin
+            CONTINUE.
+        endif.
         READ TABLE lt_bankdata_max INTO DATA(ls_bankdata_max) WITH KEY companycode = ls_header-companycode
                                                                        glaccount = ls_header-glaccount.
         APPEND VALUE #( companycode = ls_header-companycode

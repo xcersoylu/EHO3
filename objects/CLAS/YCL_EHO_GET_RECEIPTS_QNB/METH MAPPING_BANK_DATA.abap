@@ -94,21 +94,6 @@
     lv_json = iv_json.
     REPLACE 'ns:getTransactionInfoResponse' IN lv_json WITH 'getTransactionInfoResponse'.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_json CHANGING data = ls_json_response ).
-    DATA(ls_accountinfos) = ls_json_response-gettransactioninforesponse-return-accountinforeturntype-accountinfos.
-    APPEND VALUE #( companycode             = ms_bankpass-companycode
-                    glaccount               = ms_bankpass-glaccount
-                    valid_from              = mv_startdate
-                    account_no              = ls_accountinfos-accountno
-                    branch_no               = ls_accountinfos-branchcode
-                    branch_name_description = ls_accountinfos-branchname
-                    currency                = ls_accountinfos-accountcurrencycode
-                    opening_balance         =  ls_accountinfos-openingbalance
-                    closing_balance         =  ls_accountinfos-accountbalance
-                    bank_id                 =  ''
-                    account_id              = ''
-                    bank_code               =   ms_bankpass-bank_code
-    ) TO  et_bank_balance.
-
     LOOP AT ls_json_response-gettransactioninforesponse-return-accountinforeturntype-accountinfos-transactions INTO DATA(ls_transaction).
       CLEAR ls_offline_data.
       lv_sequence_no += 1.
@@ -164,4 +149,20 @@
       ENDIF.
       APPEND ls_offline_data TO et_bank_data.
     ENDLOOP.
+    IF sy-subrc = 0. "hareket varsa kayıt atılsın
+      DATA(ls_accountinfos) = ls_json_response-gettransactioninforesponse-return-accountinforeturntype-accountinfos.
+      APPEND VALUE #( companycode             = ms_bankpass-companycode
+                      glaccount               = ms_bankpass-glaccount
+                      valid_from              = mv_startdate
+                      account_no              = ls_accountinfos-accountno
+                      branch_no               = ls_accountinfos-branchcode
+                      branch_name_description = ls_accountinfos-branchname
+                      currency                = ls_accountinfos-accountcurrencycode
+                      opening_balance         =  ls_accountinfos-openingbalance
+                      closing_balance         =  ls_accountinfos-accountbalance
+                      bank_id                 =  ''
+                      account_id              = ''
+                      bank_code               =   ms_bankpass-bank_code
+      ) TO  et_bank_balance.
+    ENDIF.
   ENDMETHOD.
