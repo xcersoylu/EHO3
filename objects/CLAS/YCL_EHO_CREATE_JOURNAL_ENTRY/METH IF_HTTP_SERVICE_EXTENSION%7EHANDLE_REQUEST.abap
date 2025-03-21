@@ -149,7 +149,7 @@
            REPORTED DATA(ls_reported)
            MAPPED DATA(ls_mapped).
           IF ls_failed IS NOT INITIAL.
-            ms_response-messages = VALUE #( FOR wa IN ls_reported-journalentry ( message = wa-%msg->if_message~get_text( ) messagetype = mc_error ) ).
+            ms_response-messages = VALUE #( base ms_response-messages FOR wa IN ls_reported-journalentry ( message = wa-%msg->if_message~get_text( ) messagetype = mc_error ) ).
           ELSE.
             COMMIT ENTITIES BEGIN
              RESPONSE OF i_journalentrytp
@@ -177,12 +177,10 @@
                               fiscal_year             = VALUE #( ls_commit_reported-journalentry[ 1 ]-fiscalyear OPTIONAL ) ) TO lt_saved_receipts.
 
             ELSE.
-              ms_response-messages = VALUE #( FOR wa_commit IN ls_commit_reported-journalentry ( message = wa_commit-%msg->if_message~get_text( ) messagetype = mc_error ) ).
+              ms_response-messages = VALUE #( base ms_response-messages FOR wa_commit IN ls_commit_reported-journalentry ( message = wa_commit-%msg->if_message~get_text( ) messagetype = mc_error ) ).
             ENDIF.
           ENDIF.
-*          CLEAR ls_rule_data.
-          CLEAR lt_je.
-          CLEAR : ls_failed , ls_reported , ls_commit_failed , ls_commit_reported.
+          CLEAR : lt_je, lt_glitem , lt_apitem , lt_aritem , ls_failed , ls_reported , ls_commit_failed , ls_commit_reported.
         CATCH cx_uuid_error INTO DATA(lx_error).
           APPEND VALUE #( message = lx_error->get_longtext(  ) messagetype = mc_error ) TO ms_response-messages.
       ENDTRY.

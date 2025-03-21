@@ -57,6 +57,7 @@
           lv_documentitemtext = |*{ ls_rule-documentitemtext }*|.
           IF <ls_item>-description CP lv_documentitemtext.
             <ls_item>-rule_no = ls_rule-itemno.
+            <ls_item>-rule_data = get_rule_data( <ls_item>-rule_no ).
             EXIT.
           ENDIF.
         ENDLOOP.
