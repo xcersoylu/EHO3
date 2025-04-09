@@ -34,7 +34,13 @@
               et_bank_balance = et_bank_balance
           ).
         ELSE.
-
+          MESSAGE ID ycl_eho_utils=>mc_message_class
+                  TYPE ycl_eho_utils=>mc_error
+                  NUMBER 017
+                  WITH ls_status-code
+                  INTO DATA(lv_message).
+          APPEND VALUE #( message = lv_message messagetype = ycl_eho_utils=>mc_error ) TO et_error_messages.
+          APPEND VALUE #( message = lv_response messagetype = ycl_eho_utils=>mc_error ) TO et_error_messages.
         ENDIF.
       CATCH cx_http_dest_provider_error cx_web_http_client_error cx_web_message_error.
     ENDTRY.

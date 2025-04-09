@@ -17,7 +17,7 @@
                 mv_startdate+4(2) '-'
                 mv_startdate+6(2)
                 'T'
-                '00:00:00.000'
+                '00:00:01.000'
                 INTO lv_start_date.
     CONCATENATE mv_enddate+0(4) '-'
                 mv_enddate+4(2) '-'
@@ -33,7 +33,7 @@
                        end_date       = lv_end_date
                        transaction_id = ''
                        page_index     = 1
-                       page_size      = 500 ).
+                       page_size      = 100 ).
     rv_json = /ui2/cl_json=>serialize( EXPORTING data = ls_json pretty_name = 'X' ).
     REPLACE 'iban' IN rv_json WITH 'IBAN'.
   ENDMETHOD.
