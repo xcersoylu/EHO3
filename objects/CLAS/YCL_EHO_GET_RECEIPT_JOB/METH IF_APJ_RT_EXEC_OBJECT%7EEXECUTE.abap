@@ -8,6 +8,7 @@
     DATA lv_original_data    TYPE string.
     DATA lt_glaccount_range TYPE RANGE OF hkont.
     DATA lv_error TYPE abap_boolean.
+    DATA lt_error_messages TYPE yeho_tt_message.
     LOOP AT it_parameters INTO DATA(ls_parameter).
       CASE ls_parameter-selname.
         WHEN 'P_COMPANYCODE'.
@@ -68,7 +69,7 @@
               EXIT.
             ENDIF.
             LOOP AT lt_bankpass INTO DATA(ls_bankpass).
-              CLEAR : lt_bank_data , lt_bank_balance , lv_original_data.
+              CLEAR : lt_bank_data , lt_bank_balance , lv_original_data,lt_error_messages.
               ycl_eho_get_receipts=>factory(
                 EXPORTING
                   is_bankpass = ls_bankpass
@@ -82,10 +83,19 @@
                   et_bank_data = lt_bank_data
                   et_bank_balance = lt_bank_balance
                   ev_original_data = lv_original_data
+                  et_error_messages = lt_error_messages
               ).
-              IF lt_bank_data IS NOT INITIAL OR lt_bank_balance IS NOT INITIAL.
-                APPEND LINES OF lt_bank_data TO lt_bank_data_all.
-                APPEND LINES OF lt_bank_balance TO lt_bank_balance_all.
+              IF lt_error_messages IS NOT INITIAL.
+                LOOP AT lt_error_messages INTO DATA(ls_error_messages).
+                  DATA(lo_free) = cl_bali_free_text_setter=>create( severity = if_bali_constants=>c_severity_warning
+                                                                    text     = CONV #( ls_error_messages-message(200) ) ).
+                  lo_log->add_item( lo_free ).
+                ENDLOOP.
+              ELSE.
+                IF lt_bank_data IS NOT INITIAL OR lt_bank_balance IS NOT INITIAL.
+                  APPEND LINES OF lt_bank_data TO lt_bank_data_all.
+                  APPEND LINES OF lt_bank_balance TO lt_bank_balance_all.
+                ENDIF.
               ENDIF.
             ENDLOOP.
             lv_startdate += 1.
